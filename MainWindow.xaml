@@ -3,10 +3,134 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:VittaTest"
+        xmlns:local="clr-namespace:VittaTest" 
+        xmlns:viewmodels="clr-namespace:VittaTest.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
+        <!-- Заголовок и кнопки управления -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="Учёт заказов и поступлений денежных средств" 
+                       FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            <Button Content="Обновить данные" 
+                    Command="{Binding LoadDataCommand}" 
+                    Margin="20,0,0,0" Padding="12,6"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Заказы -->
+            <GroupBox Header="Заказы" Grid.Column="0" Margin="5">
+                <DataGrid ItemsSource="{Binding Orders}" 
+              SelectedItem="{Binding SelectedOrder}"
+              AutoGenerateColumns="False"
+              IsReadOnly="True"
+              SelectionMode="Single"
+              GridLinesVisibility="None">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="№" 
+                                Binding="{Binding OrderNumber}" 
+                                Width="60"/>
+                        <DataGridTextColumn Header="Дата" 
+                                Binding="{Binding OrderDate, StringFormat=dd.MM.yyyy HH:mm}" 
+                                Width="140"/>
+                        <DataGridTextColumn Header="Сумма заказа" 
+                                Binding="{Binding Amount, StringFormat=N2}" 
+                                Width="110"/>
+                        <DataGridTextColumn Header="Оплачено" 
+                                Binding="{Binding PaidAmount, StringFormat=N2}" 
+                                Width="110"/>
+                        <DataGridTextColumn Header="Остаток к оплате" 
+                                Binding="{Binding Amount - PaidAmount, StringFormat=N2}" 
+                                Width="130"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+
+            <!-- Поступления денежных средств -->
+            <GroupBox Header="Поступления денежных средств" Grid.Column="1" Margin="5">
+                <DataGrid ItemsSource="{Binding CashInflows}" 
+              SelectedItem="{Binding SelectedInflow}"
+              AutoGenerateColumns="False"
+              IsReadOnly="True"
+              SelectionMode="Single">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="№" 
+                                Binding="{Binding InflowNumber}" 
+                                Width="60"/>
+                        <DataGridTextColumn Header="Дата" 
+                                Binding="{Binding InflowDate, StringFormat=dd.MM.yyyy HH:mm}" 
+                                Width="140"/>
+                        <DataGridTextColumn Header="Сумма поступления" 
+                                Binding="{Binding Amount, StringFormat=N2}" 
+                                Width="140"/>
+                        <DataGridTextColumn Header="Остаток" 
+                                Binding="{Binding Remaining, StringFormat=N2}" 
+                                Width="110"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+
+            <!-- История платежей -->
+            <GroupBox Header="История платежей" Grid.Column="2" Margin="5">
+                <DataGrid ItemsSource="{Binding Payments}" 
+              AutoGenerateColumns="False"
+              IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID платежа" 
+                                Binding="{Binding PaymentID}" 
+                                Width="140"/>
+                        <DataGridTextColumn Header="№ Заказа" 
+                                Binding="{Binding OrderNumber}" 
+                                Width="80"/>
+                        <DataGridTextColumn Header="№ Поступления" 
+                                Binding="{Binding InflowNumber}" 
+                                Width="100"/>
+                        <DataGridTextColumn Header="Сумма" 
+                                Binding="{Binding PaymentAmount, StringFormat=N2}" 
+                                Width="100"/>
+                        <DataGridTextColumn Header="Дата" 
+                                Binding="{Binding PaymentDate, StringFormat=dd.MM.yyyy HH:mm}" 
+                                Width="140"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+        </Grid>
+
+        <!-- Панель создания платежа -->
+        <GroupBox Header="Создать новый платёж" Grid.Row="2" Margin="5,15,5,5">
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                    <TextBlock Text="Сумма платежа:" Margin="0,5"/>
+                    <TextBox Text="{Binding PaymentAmount, UpdateSourceTrigger=PropertyChanged}" 
+                             Width="150" Height="28"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
+                    <Button Content="Выполнить платёж" 
+                            Command="{Binding MakePaymentCommand}"
+                            Padding="20,8" 
+                            FontWeight="SemiBold"
+                            IsEnabled="{Binding CanMakePayment}"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
     </Grid>
 </Window>

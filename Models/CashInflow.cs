@@ -1,13 +1,14 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
 
-namespace VittaTest.Models
+namespace VittaTest.Models;
+
+public partial class CashInflow
 {
-    public partial class CashInflow : ObservableObject
-    {
-        public int InflowNumber { get; set; }
-        public DateTime InflowDate { get; set; }
-        public decimal Amount { get; set; }
-        public decimal Remaining { get; set; }
-        public byte[] RowVersion { get; set; } = Array.Empty<byte>();
-    }
+    public int InflowNumber { get; set; }
+    public DateTime InflowDate { get; set; }
+    public decimal Amount { get; set; }
+    public decimal Remaining { get; set; }
+    public byte[] RowVersion { get; set; } = null!;
+    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 }
