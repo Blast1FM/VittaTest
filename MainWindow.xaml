@@ -51,9 +51,6 @@
                         <DataGridTextColumn Header="Оплачено" 
                                 Binding="{Binding PaidAmount, StringFormat=N2}" 
                                 Width="110"/>
-                        <DataGridTextColumn Header="Остаток к оплате" 
-                                Binding="{Binding Amount - PaidAmount, StringFormat=N2}" 
-                                Width="130"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>
@@ -61,10 +58,11 @@
             <!-- Поступления денежных средств -->
             <GroupBox Header="Поступления денежных средств" Grid.Column="1" Margin="5">
                 <DataGrid ItemsSource="{Binding CashInflows}" 
-              SelectedItem="{Binding SelectedInflow}"
-              AutoGenerateColumns="False"
-              IsReadOnly="True"
-              SelectionMode="Single">
+                      SelectedItem="{Binding SelectedInflow}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      SelectionMode="Single"
+                      GridLinesVisibility="None">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="№" 
                                 Binding="{Binding InflowNumber}" 
@@ -85,22 +83,35 @@
             <!-- История платежей -->
             <GroupBox Header="История платежей" Grid.Column="2" Margin="5">
                 <DataGrid ItemsSource="{Binding Payments}" 
-              AutoGenerateColumns="False"
-              IsReadOnly="True">
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      GridLinesVisibility="None">
                     <DataGrid.Columns>
+
                         <DataGridTextColumn Header="ID платежа" 
-                                Binding="{Binding PaymentID}" 
-                                Width="140"/>
+                            Width="180" 
+                            IsReadOnly="True"
+                            Binding="{Binding PaymentId}"/>
+
                         <DataGridTextColumn Header="№ Заказа" 
                                 Binding="{Binding OrderNumber}" 
                                 Width="80"/>
+
                         <DataGridTextColumn Header="№ Поступления" 
                                 Binding="{Binding InflowNumber}" 
                                 Width="100"/>
-                        <DataGridTextColumn Header="Сумма" 
+
+                        <DataGridTextColumn Header="Сумма платежа" 
                                 Binding="{Binding PaymentAmount, StringFormat=N2}" 
-                                Width="100"/>
-                        <DataGridTextColumn Header="Дата" 
+                                Width="110">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <DataGridTextColumn Header="Дата платежа" 
                                 Binding="{Binding PaymentDate, StringFormat=dd.MM.yyyy HH:mm}" 
                                 Width="140"/>
                     </DataGrid.Columns>
