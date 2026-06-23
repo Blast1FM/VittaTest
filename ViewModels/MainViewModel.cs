@@ -1,19 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.ObjectModel;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using VittaTest.Models;
 using VittaTest.Services;
+using VittaTest.Views;
 
 namespace VittaTest.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
         private readonly IOrderPaymentService _orderPaymentService;
-        public ObservableCollection<Order> Orders { get; } = new();
-        public ObservableCollection<CashInflow> CashInflows { get; } = new();
-        public ObservableCollection<Payment> Payments { get; } = new();
         [ObservableProperty] 
         public Order? selectedOrder;
         [ObservableProperty]
@@ -26,33 +24,40 @@ namespace VittaTest.ViewModels
         public MainViewModel(IOrderPaymentService orderPaymentService)
         {
             _orderPaymentService = orderPaymentService;
-            LoadDataAsync().ConfigureAwait(false);
         }
 
         [RelayCommand]
-        private async Task LoadDataAsync()
+        private void OpenSelectOrderWindow()
         {
-            try
+            var window = App.ServiceProvider.GetRequiredService<SelectOrderWindow>(); 
+            if (window.ShowDialog() == true)
             {
-                Orders.Clear();
-                CashInflows.Clear();
-                Payments.Clear();
-
-                var orders = _orderPaymentService.GetAllOrdersAsync();
-                var inflows = _orderPaymentService.GetAllCashInflowsAsync();
-                var payments = _orderPaymentService.GetAllPaymentsAsync();
-
-                await Task.WhenAll(orders, inflows, payments);
-
-                foreach (var o in await orders) Orders.Add(o);
-                foreach (var ci in await inflows) CashInflows.Add(ci);
-                foreach (var p in await payments) Payments.Add(p);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка загрузки данных: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                SelectedOrder = window?.SelectedOrder;
             }
         }
+
+        [RelayCommand]
+        private void OpenSelectInflowWindow()
+        {
+            var window = App.ServiceProvider.GetRequiredService<SelectCashInflowWindow>();
+            if (window.ShowDialog() == true)
+            {
+                SelectedInflow = window?.SelectedInflow;
+            }
+        }
+
+        [RelayCommand]
+        private void OpenPaymentsWindow()
+        {
+            var window = App.ServiceProvider.GetRequiredService<PaymentsWindow>();
+            window.ShowDialog();
+        }
+
+        [RelayCommand]
+        private void ClearOrder() => SelectedOrder = null;
+
+        [RelayCommand]
+        private void ClearInflow() => SelectedInflow = null;
 
         [RelayCommand]
         private async Task MakePaymentAsync()
@@ -75,20 +80,16 @@ namespace VittaTest.ViewModels
             try
             {
                 await _orderPaymentService.MakePaymentAsync(payment);
-                await LoadDataAsync();
                 PaymentAmount = 0;
 
                 MessageBox.Show("Платёж успешно выполнен.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (DbUpdateException ex)
             {
-                await LoadDataAsync();
                 MessageBox.Show($"Ошибка в бд при выполнении платежа:\n{ex.InnerException?.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-
             }
             catch (Exception ex)
             {
-                await LoadDataAsync();
                 MessageBox.Show($"Ошибка при выполнении платежа:\n{ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

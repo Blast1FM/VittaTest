@@ -1,0 +1,29 @@
+<UserControl x:Class="VittaTest.Controls.FilterableDataGridControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="clr-namespace:VittaTest.Controls"
+             x:Name="root">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<DockPanel Grid.Row="0" Margin="0,0,0,10">
+			<TextBlock Text="Поиск:" VerticalAlignment="Center" Margin="0,0,8,0"
+                       FontWeight="SemiBold"/>
+			<TextBox Text="{Binding SearchText, ElementName=root, UpdateSourceTrigger=PropertyChanged}"
+                     Width="280"/>
+		</DockPanel>
+
+		<DataGrid Grid.Row="1"
+                  x:Name="InnerDataGrid"
+                  ItemsSource="{Binding ItemsView, ElementName=root}"
+                  SelectedItem="{Binding SelectedItem, ElementName=root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  SelectionMode="Single"
+                  GridLinesVisibility="None"/>
+	</Grid>
+</UserControl>

@@ -7,6 +7,8 @@ using System.Windows;
 using VittaTest.Data;
 using VittaTest.Services;
 using VittaTest.ViewModels;
+using VittaTest.ViewModels.Dialogs;
+using VittaTest.Views;
 
 namespace VittaTest
 {
@@ -15,7 +17,7 @@ namespace VittaTest
     /// </summary>
     public partial class App : Application
     {
-        public IServiceProvider ServiceProvider { get; private set; } = null!;
+        public static IServiceProvider ServiceProvider { get; private set; } = null!;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -34,7 +36,6 @@ namespace VittaTest
 
         private void ConfigureServices(IServiceCollection services)
         {
-            // Configuration
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -50,15 +51,42 @@ namespace VittaTest
 
             services.AddSingleton<IOrderPaymentService,  OrderPaymentService>();
 
-            // ViewModels
+            // ==================== ViewModels ====================
             services.AddTransient<MainViewModel>();
+            services.AddTransient<SelectOrderViewModel>();
+            services.AddTransient<SelectCashInflowViewModel>();
+            services.AddTransient<PaymentsViewModel>();
 
-            // Views
+            // ==================== Windows ====================
             services.AddTransient<MainWindow>(sp =>
             {
-                var viewModel = sp.GetRequiredService<MainViewModel>();
+                var vm = sp.GetRequiredService<MainViewModel>();
                 var window = new MainWindow();
-                window.DataContext = viewModel;
+                window.DataContext = vm;
+                return window;
+            });
+
+            services.AddTransient<SelectOrderWindow>(sp =>
+            {
+                var vm = sp.GetRequiredService<SelectOrderViewModel>();
+                var window = new SelectOrderWindow();
+                window.DataContext = vm;
+                return window;
+            });
+
+            services.AddTransient<SelectCashInflowWindow>(sp =>
+            {
+                var vm = sp.GetRequiredService<SelectCashInflowViewModel>();
+                var window = new SelectCashInflowWindow();
+                window.DataContext = vm;
+                return window;
+            });
+
+            services.AddTransient<PaymentsWindow>(sp =>
+            {
+                var vm = sp.GetRequiredService<PaymentsViewModel>();
+                var window = new PaymentsWindow();
+                window.DataContext = vm;
                 return window;
             });
         }
