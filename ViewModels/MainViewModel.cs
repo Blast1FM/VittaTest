@@ -98,6 +98,7 @@ namespace VittaTest.ViewModels
             {
                 ClearOrder();
                 ClearInflow();
+                PaymentAmountText = "0";
             }
         }
 
