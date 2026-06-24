@@ -58,7 +58,7 @@
         </GroupBox>
 
         <!-- Выбранное поступление -->
-        <GroupBox Header="Выбранное поступление" Grid.Row="3" Margin="0,0,0,12">
+        <GroupBox Header="Выбранный приход" Grid.Row="3" Margin="0,0,0,12">
             <TextBlock Margin="12" FontSize="13">
                 <Run Text="{Binding SelectedInflow.InflowNumber, TargetNullValue='—', FallbackValue='—'}" />
                 <Run Text="{Binding SelectedInflow.InflowDate, StringFormat=' от {0:dd.MM.yyyy}', TargetNullValue=''}" />
