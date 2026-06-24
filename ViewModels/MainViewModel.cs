@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
 using System.Windows;
 using VittaTest.Models;
 using VittaTest.Services;
@@ -20,6 +21,8 @@ namespace VittaTest.ViewModels
         public decimal paymentAmount;
         [ObservableProperty]
         public bool canMakePayment;
+        [ObservableProperty]
+        private string paymentAmountText = "0";
 
         public MainViewModel(IOrderPaymentService orderPaymentService)
         {
@@ -62,7 +65,7 @@ namespace VittaTest.ViewModels
         [RelayCommand]
         private async Task MakePaymentAsync()
         {
-            if (SelectedOrder == null || SelectedInflow == null || PaymentAmount <= 0)
+            if (SelectedOrder == null || SelectedInflow == null || PaymentAmount == 0)
             {
                 MessageBox.Show("Выберите заказ, поступление и укажите сумму платежа.", "Валидация", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -81,7 +84,6 @@ namespace VittaTest.ViewModels
             {
                 await _orderPaymentService.MakePaymentAsync(payment);
                 PaymentAmount = 0;
-
                 MessageBox.Show("Платёж успешно выполнен.", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (DbUpdateException ex)
@@ -92,10 +94,34 @@ namespace VittaTest.ViewModels
             {
                 MessageBox.Show($"Ошибка при выполнении платежа:\n{ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            finally
+            {
+                ClearOrder();
+                ClearInflow();
+            }
         }
+
+        partial void OnPaymentAmountTextChanged(string value)
+        {
+            
+            if (decimal.TryParse(value,
+                NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign |
+                NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
+                CultureInfo.CurrentCulture,
+                out decimal result))
+            {
+                PaymentAmount = result;
+            }
+            else
+            {
+                PaymentAmount = 0;
+            }
+            UpdateCanMakePayment();
+        }
+
         private void UpdateCanMakePayment()
         {
-            CanMakePayment = PaymentAmount > 0 &&
+            CanMakePayment = PaymentAmount != 0 &&
                              SelectedOrder != null &&
                              SelectedInflow != null;
         }

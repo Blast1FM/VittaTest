@@ -115,7 +115,6 @@ namespace VittaTest.Controls
             SelectedItem = null;
         }
 
-        // Columns synchronization
         private static void OnColumnsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (FilterableDataGridControl)d;

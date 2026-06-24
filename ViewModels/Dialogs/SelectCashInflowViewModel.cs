@@ -1,11 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Data;
 using VittaTest.Models;
 using VittaTest.Services;
+using VittaTest.ViewModels.Messages;
 
 namespace VittaTest.ViewModels.Dialogs
 {
@@ -50,9 +52,15 @@ namespace VittaTest.ViewModels.Dialogs
         }
 
         [RelayCommand]
-        private void Select() { }
+        private void Select() 
+        {
+            WeakReferenceMessenger.Default.Send(new CloseWindowMessage(true));
+        }
 
         [RelayCommand]
-        private void Cancel() { }
+        private void Cancel() 
+        {
+            WeakReferenceMessenger.Default.Send(new CloseWindowMessage(false));
+        }
     }
 }

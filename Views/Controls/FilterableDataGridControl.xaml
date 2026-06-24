@@ -11,7 +11,8 @@
 		</Grid.RowDefinitions>
 
 		<DockPanel Grid.Row="0" Margin="0,0,0,10">
-			<TextBlock Text="Поиск:" VerticalAlignment="Center" Margin="0,0,8,0"
+			<!-- В идеале текст должен быть вынесен в dependency property чтобы пользователь мог указать, по какой колонке идет поиск -->
+			<TextBlock Text="Поиск по номеру:" VerticalAlignment="Center" Margin="0,0,8,0"
                        FontWeight="SemiBold"/>
 			<TextBox Text="{Binding SearchText, ElementName=root, UpdateSourceTrigger=PropertyChanged}"
                      Width="280"/>

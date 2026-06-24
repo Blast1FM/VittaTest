@@ -16,14 +16,12 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- The search box is inside the control, not here -->
         <controls:FilterableDataGridControl 
             ItemsView="{Binding CashInflowsView}"
             SelectedItem="{Binding SelectedInflow, Mode=TwoWay}"
-            SearchText="{Binding SearchText}"
-            SearchColumnPath="{Binding SearchColumnPath}">
+            SearchText="{Binding SearchText, Mode=TwoWay}"
+            SearchColumnPath="{Binding SearchColumnPath, Mode=TwoWay}">
 
-            <!-- Define columns for this view -->
             <DataGridTextColumn Header="Номер прихода"
                                 Binding="{Binding InflowNumber}" Width="Auto"/>
             <DataGridTextColumn Header="Остаток"
@@ -38,7 +36,7 @@
             <Button Content="Выбрать" Command="{Binding SelectCommand}"
                     Padding="20,8" Width="120" IsDefault="True"/>
             <Button Content="Отмена" Command="{Binding CancelCommand}"
-                    Padding="20,8" Width="120" Margin="10,0,0,0" IsCancel="True"/>
+                    Padding="20,8" Width="120" Margin="10,0,0,0"/>
         </StackPanel>
     </Grid>
 </Window>

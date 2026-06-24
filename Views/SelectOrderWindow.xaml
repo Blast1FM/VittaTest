@@ -19,9 +19,9 @@
         <controls:FilterableDataGridControl 
             ItemsView="{Binding OrdersView}"
             SelectedItem="{Binding SelectedOrder, Mode=TwoWay}"
-            SearchText="{Binding SearchText}">
+            SearchText="{Binding SearchText, Mode=TwoWay}"
+            SearchColumnPath="{Binding SearchColumnPath}">
 
-            <!-- Define the columns you need for this particular view -->
             <DataGridTextColumn Header="Номер заказа"
                 Binding="{Binding OrderNumber}"
                 Width="Auto"/>
@@ -42,7 +42,7 @@
                     Padding="20,8" Width="120" IsDefault="True"/>
             <Button Content="Отмена" 
                     Command="{Binding CancelCommand}"
-                    Padding="20,8" Width="120" Margin="10,0,0,0" IsCancel="True"/>
+                    Padding="20,8" Width="120" Margin="10,0,0,0"/>
         </StackPanel>
     </Grid>
 </Window>
